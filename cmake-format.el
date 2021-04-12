@@ -18,7 +18,8 @@
 ;; This file is not part of GNU Emacs.
 
 ;;; Code:
-(require 'cl-lib)
+(eval-when-compile
+  (require 'cl-lib))
 (defcustom cmake-format-command "cmake-format"
   "The 'cmake-format' command."
   :type 'string
@@ -72,7 +73,7 @@ a `before-save-hook'."
                 (forward-line len)
                 (let ((text (buffer-substring start (point))))
                   (with-current-buffer target-buffer
-                    (decf line-offset len)
+                    (cl-decf line-offset len)
                     (goto-char (point-min))
                     (forward-line (- from len line-offset))
                     (insert text)))))
@@ -117,7 +118,7 @@ a `before-save-hook'."
           ;; output in case of success.
           (if (zerop (apply #'process-file cmake-format-command nil err-buf nil our-fmt-args))
               (progn
-                ;; There is no remote variant of ‘call-process-region’, but we
+                ;; There is no remote variant of  call-process-region , but we
                 ;; can invoke diff locally, and the results should be the same.
                 (if (zerop (let ((local-copy (file-local-copy tmpfile)))
                              (unwind-protect
